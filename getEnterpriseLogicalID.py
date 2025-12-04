@@ -5,45 +5,49 @@ import os
 import sys
 from copy import deepcopy
 import requests
+from config import get_config
 
 ########## VCO info and credentials
 
-#Replace XXX with the actual token
-token = "Token XXX"
+# Load configuration from .env file
+config = get_config()
 
-enterpriseId = (XXX)
-
-vco_url = 'https://' + 'vcoXXX.velocloud.net' + '/portal/rest/'
+# Get values from config
+token = config['token']
+enterpriseId = config['enterprise_id']
+vco_url = config['vco_url_v1']
+verify_ssl = config['verify_ssl']
 
 headers = {"Content-Type": "application/json", "Authorization": token}
 
 ######## VCO API methods
-get_Enterprise = vco_url+'enterprise/getEnterprise'
+get_Enterprise = vco_url + 'enterprise/getEnterprise'
 
 ######################### Main Program #####################
 #### MAIN BODY
 ######################### Main Program #####################
+
 params = {
+    "enterpriseId": enterpriseId
+}
 
-    "enterpriseId": enterpriseId,
-    }
+response = requests.post(get_Enterprise, headers=headers, data=json.dumps(params), verify=verify_ssl)
 
-response = requests.post(get_Enterprise, headers=headers, data=json.dumps(params), verify=False)
+resp_dict = response.json()
 
-resp_dict=response.json()
+entLogicalId = resp_dict.get("logicalId", "Not found")
 
-entLogicalId=resp_dict["logicalId"]
+# Write output to file
+with open("enterpriseLogicalID.txt", "w") as f:
+    f.write(json.dumps(resp_dict, indent=2))
 
-print("The Enterprise Logical ID for Enterprise ID of", enterpriseId, "is", entLogicalId)
-
-f = open("enterpriseLogicalID.txt", "w")
-f.write(json.dumps(resp_dict,indent=2))
-f.close()
-
+print(f"✓ Response saved to enterpriseLogicalID.txt")
+print(f"  Enterprise ID: {enterpriseId}")
+print(f"  Enterprise Logical ID: {entLogicalId}")
 
 ######## Debugging
 
 #print(response.json())
-#print("response is ", json.dumps(resp_dict,indent=2))
+#print("response is ", json.dumps(resp_dict, indent=2))
 
 

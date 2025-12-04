@@ -14,36 +14,35 @@ config = get_config()
 
 # Get values from config
 token = config['token']
+enterpriseId = config['enterprise_id']
 vco_url = config['vco_url_v1']
 verify_ssl = config['verify_ssl']
 
 headers = {"Content-Type": "application/json", "Authorization": token}
 
 ######## VCO API methods
-get_EntList = vco_url + 'monitoring/getEnterpriseEdgeLinkStatus'
+get_route_config = vco_url + 'enterprise/getEnterpriseRouteConfiguration'
 
 ######################### Main Program #####################
 #### MAIN BODY
 ######################### Main Program #####################
 
 params = {
-    'links': False
+    "enterpriseId": enterpriseId
 }
 
-response = requests.post(get_EntList, headers=headers, data=json.dumps(params), verify=verify_ssl)
+response = requests.post(get_route_config, headers=headers, data=json.dumps(params), verify=verify_ssl)
 
 resp_dict = response.json()
 
 # Write output to file
-with open("enterpriseList.txt", "w") as f:
+with open("enterpriseRouteConfig.txt", "w") as f:
     f.write(json.dumps(resp_dict, indent=2))
 
-print(f"✓ Response saved to enterpriseList.txt")
-if isinstance(resp_dict, list):
-    print(f"  Retrieved {len(resp_dict)} enterprise(s)")
+print(f"✓ Response saved to enterpriseRouteConfig.txt")
+print(f"  Retrieved route configuration for enterprise ID: {enterpriseId}")
 
 ######## Debugging
 
 #print(response.json())
 #print("response is ", json.dumps(resp_dict, indent=2))
-
