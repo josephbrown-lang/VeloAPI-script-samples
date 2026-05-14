@@ -3,6 +3,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from copy import deepcopy
 import requests
 from config import get_config
@@ -34,10 +35,9 @@ if not edgeId:
     print("Please run setup_config.py and provide an Edge ID, or set VCO_EDGE_ID in .env", file=sys.stderr)
     sys.exit(1)
 
-# Configure time interval (update start/end timestamps as needed)
-# Timestamps must be in milliseconds since epoch
-interval_start = 1748419509417  # Replace with your start timestamp
-interval_end = 1748462709417    # Replace with your end timestamp
+# Compute the last hour in milliseconds since epoch
+interval_end = int(time.time() * 1000)
+interval_start = interval_end - (60 * 60 * 1000)
 
 params = {
     "edgeId": edgeId,
