@@ -74,6 +74,7 @@ VCO_VERIFY_SSL=false
 |---|---|
 | `getEdgeNetworkInterfaceMetrics.py` | Aggregate interface metrics for the past hour. Returns routed interfaces only — switched LAN interfaces are excluded by the edge |
 | `getEdgeLinkSeries.py` | Time-series WAN link metrics for a specified interval |
+| `get95thPercentile.py` | Calculate 95th percentile bandwidth (Tx, Rx, Combined) over a 30-day window using 5-minute samples. Reports daily P95 values and a final P95-of-P95. Use `--samples` to export all raw samples to CSV |
 
 ### Monitoring & Status
 
@@ -89,6 +90,14 @@ VCO_VERIFY_SSL=false
 | `getEnterpriseRouteConfig.py` | Get enterprise routing configuration |
 | `updateEnterpriseRouteConfig.py` | Update enterprise routing configuration (reads parameters from `updateEnterpriseRouteConfig.txt`) |
 | `updateWebSocketIP.py` | Update the WebSocket server address system property on VCO |
+| `setCertificateAuth.py` | Set edge PKI mode to `CERTIFICATE_REQUIRED` for all edges in an enterprise. Use `--dry-run` to preview changes without applying them |
+
+### Licensing
+
+| Script | Description |
+|---|---|
+| `setEnterprisePocLicense.py` | Switch an enterprise's license edition to POC. Shows current license assignments, then calls `setEnterpriseEdgeLicenseEdition` to replace all licenses (enterprise-level and edge-level) with equivalent POC licenses. Falls back to `addEdgeLicensesToEnterprise` if no network-level POC licenses are configured |
+| `setProxyPocLicense.py` | Add POC license 325 to a partner (enterprise proxy). Shows current proxy license assignments with edge and enterprise counts, adds the POC license via `addEdgeLicensesToEnterpriseProxy`, and removes any unused licenses that are safe to clean up. Requires `VCO_ENTERPRISE_PROXY_ID` in `.env` |
 
 ## API versions
 
@@ -109,6 +118,8 @@ edgeDataExport.txt
 enterpriseList.txt
 enterpriseLogicalID.txt
 enterpriseRouteConfig.txt
+get95thPercentileResults.txt
+get95thPercentileSamples.csv        (only with --samples flag)
 getEdgeInterfaceStatus.txt
 getEdgeLinkSeries.txt
 getEdgeNetworkInterfaceMetrics.txt
