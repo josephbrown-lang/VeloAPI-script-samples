@@ -1,0 +1,6 @@
+name,modelNumber,configurationId,serialNumber,description,contactName,contactEmail,streetAddress,city,state,postalCode,country,lat,lon
+Store-1001-Edge,edge640,,,"Store 1001 Dallas",John Smith,jsmith@example.com,100 Main St,Dallas,TX,75201,US,32.7767,-96.7970
+Store-1002-Edge,edge640,,,"Store 1002 Austin",Jane Doe,jdoe@example.com,200 Congress Ave,Austin,TX,78701,US,30.2672,-97.7431
+DC-West-Edge,edge3800,,,"Data Center West",NOC Team,noc@example.com,500 Data Center Dr,San Jose,CA,95110,US,37.3382,-121.8863
+Branch-NYC,edge620,,,"New York Branch",Bob Wilson,bwilson@example.com,350 5th Ave,New York,NY,10118,US,40.7484,-73.9857
+Virtual-Lab-Edge,virtual,,,"Lab virtual edge",,,,,,,,
