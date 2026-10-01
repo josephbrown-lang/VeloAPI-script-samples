@@ -5,12 +5,16 @@ Calls the pki/renewEdgeCertificate API (v1) to trigger certificate renewal.
 The renewal is asynchronous -- the edge picks up the new certificate on its
 next heartbeat.
 
+Uses VCO_EDGE_ID and VCO_ENTERPRISE_ID from .env by default.
+
 Usage:
+  python renewEdgeCertificate.py
   python renewEdgeCertificate.py --edge-id 123
   python renewEdgeCertificate.py --edge-id 123 --enterprise-id 456
 """
 
 import json
+import sys
 import argparse
 import requests
 from config import get_config
@@ -18,25 +22,34 @@ from config import get_config
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Renew edge PKI certificate")
-    parser.add_argument("--edge-id", type=int, required=True,
-                        help="Edge ID to renew certificate for")
+    parser.add_argument("--edge-id", type=int,
+                        help="Edge ID (default: VCO_EDGE_ID from .env)")
     parser.add_argument("--enterprise-id", type=int,
-                        help="Override enterprise ID from .env")
+                        help="Enterprise ID (default: VCO_ENTERPRISE_ID from .env)")
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    config = get_config(enterprise_id=args.enterprise_id)
+    config = get_config(enterprise_id=args.enterprise_id, edge_id=args.edge_id)
 
     headers = config['headers']
     vco_url = config['vco_url_v1']
     verify_ssl = config['verify_ssl']
+    enterprise_id = config.get('enterprise_id')
+    edge_id = config.get('edge_id')
 
-    params = {"edgeId": args.edge_id}
+    if not edge_id:
+        print("Error: edge_id is required. Set VCO_EDGE_ID in .env or use --edge-id",
+              file=sys.stderr)
+        sys.exit(1)
+
+    params = {"edgeId": edge_id}
 
     print(f"VCO: {config['vco_hostname']}")
-    print(f"Renewing certificate for edge ID: {args.edge_id}")
+    if enterprise_id:
+        print(f"Enterprise ID: {enterprise_id}")
+    print(f"Renewing certificate for edge ID: {edge_id}")
 
     response = requests.post(
         vco_url + 'pki/renewEdgeCertificate',
